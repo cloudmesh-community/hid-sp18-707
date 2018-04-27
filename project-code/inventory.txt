@@ -1,0 +1,8 @@
+[Master]
+
+<ip address here> ansible_ssh_user=<username here>
+
+[Slave]
+
+<ip address here> ansible_ssh_user=<username here>
+<ip address here> ansible_ssh_user=<username here>
