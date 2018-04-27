@@ -1,10 +1,10 @@
 # Twitter Sentiment Analysis with Spark cluster deployment
 
-This script is designed to run with a master and two worker nodes in spark cluster.
+This script is designed to run with a master and two worker nodes.
 
 ## Getting Started
 
-The directions below were tested on a fresh installation of ubuntu 16.04 that has ssh access to 3 machines in a cloud cluster on digital ocean inc.
+The directions below were tested on a fresh installation of ubuntu 16.04 that has ssh access to 3 machines on digital ocean inc.
 
 ### Prerequisites
 
