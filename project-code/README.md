@@ -58,11 +58,11 @@ ansible-playbook -i inventory.txt main.yml
 Monitor the progress of the cluster in your browser and type in the following
 
 ```
-<your ip address>:8080
+<your master-ip address>:8080
 ```
 When the analysis is complete, ssh in your master ip address.
 ```
-ssh <username>@<ip-address>
+ssh <username>@<master-ip-address>
 ```
 Once you are logged in move to the spark/bin directory to see output files and images.
 
