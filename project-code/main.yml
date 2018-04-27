@@ -1,0 +1,109 @@
+---
+
+- hosts: all
+  gather_facts: False
+
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: all
+  gather_facts: True
+  tasks:
+  - set_fact:
+      ENV: "{{ hostvars[groups['Master'][0]]['ansible_eth0']['ipv4']['address'] }}"
+      cacheable: true
+      
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: add-apt
+      apt: name=software-properties-common state=latest
+      
+    - name: repository addition from oracle
+      apt_repository: repo='ppa:webupd8team/java'
+      
+    - name: java8
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+    - name: install Oracle Java 8
+      apt: name={{item}} state=latest
+      with_items:
+       - oracle-java8-installer
+       - ca-certificates
+       - oracle-java8-set-default
+      
+    - name: install packages
+      apt: name={{item}} state=latest
+      with_items:
+      - python
+      - python-pip
+      - vim
+      - python-dev
+      - python-tk
+      
+    - name: upgrade pip
+      become: yes
+      shell: |
+        pip install --upgrade pip
+
+    - name: pip installs
+      become: yes
+      shell: |
+        pip install NumPy
+        pip install Matplotlib
+        pip install wordcloud
+        pip install textblob
+      ignore_errors: yes
+
+    - name: Download spark
+      get_url:
+        url=http://mirrors.advancedhosters.com/apache/spark/spark-2.3.0/spark-2.3.0-bin-hadoop2.7.tgz
+        dest=~/spark-2.3.0-bin-hadoop2.7.tgz
+
+    - name: Extract archive
+      unarchive: src=~/spark-2.3.0-bin-hadoop2.7.tgz
+                 dest=~/
+                 copy=no
+      become: yes
+      become_user: root
+
+
+    - name: get data, scripts
+      shell: |
+        cd ~/spark-2.3.0-bin-hadoop2.7/bin
+        (ls obamcare2018_1.json && echo "Dataset exists") || wget https://www.dropbox.com/s/ny550e9y4i9plc6/twitter.json
+        (ls main.py && echo "Script exists") || wget https://www.dropbox.com/s/f8uh2m62tk134a6/main.py
+
+    - name: set spark-env
+      copy: content='SPARK_LOCAL_IP='{{ ENV }}'' dest='~/spark-2.3.0-bin-hadoop2.7/conf/spark-env.sh.template'
+
+    - name: set spark-env
+      copy: content='SPARK_MASTER_HOST='{{ ENV }}'' dest='~/spark-2.3.0-bin-hadoop2.7/conf/spark-env.sh.template'
+      
+- hosts: Master
+  become: yes
+  tasks:
+    - name: setup master node
+      shell: |
+        bash ~/spark-2.3.0-bin-hadoop2.7/sbin/stop-master.sh
+        bash ~/spark-2.3.0-bin-hadoop2.7/sbin/start-master.sh -h {{ ENV }}
+        mv ~/spark-2.3.0-bin-hadoop2.7/conf/spark-env.sh.template ~/spark-2.3.0-bin-hadoop2.7/conf/spark-env.sh
+        bash ~/spark-2.3.0-bin-hadoop2.7/conf/spark-env.sh
+
+- hosts: Slave
+  become: yes
+  tasks:
+    - name: setup slave
+      shell: |
+        bash ~/spark-2.3.0-bin-hadoop2.7/sbin/stop-slave.sh
+        bash ~/spark-2.3.0-bin-hadoop2.7/sbin/start-slave.sh spark://{{ ENV }}:7077
+
+- hosts: Master
+  become: yes
+  tasks:
+    - name: Run Twitter Sentiment Analysis
+      shell: |
+        cd ~/spark-2.3.0-bin-hadoop2.7/bin
+        bash spark-submit --master spark://{{ ENV }}:7077 main.py
