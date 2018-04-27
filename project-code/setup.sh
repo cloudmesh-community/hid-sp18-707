@@ -1,8 +1,8 @@
 #!/bin/bash
 
-apt-get update
-apt-get upgrade
-apt-get install python
-apt install python-pip
-pip install --upgrade pip
-pip install ansible
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install python
+sudo apt install python-pip
+sudo pip install --upgrade pip
+sudo pip install ansible
