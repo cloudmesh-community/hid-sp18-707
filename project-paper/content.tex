@@ -11,8 +11,7 @@
   \city{Bloomington} 
   \state{Indiana} 
   \postcode{47408}
-  }
-  
+}
 \email{mls35@iu.edu}
 
 
@@ -21,15 +20,15 @@
 
 
 \begin{abstract}
-The mission of this project is to utilize technologies and cloud
-computing to perform a successful sentiment analysis through software
-deployment written in python.  The project encompasses social media
-mining of twitter, analysis of data through apache spark, and testing
-on a multimachine cluster.  Benchmarks on the cloud infrastructure
-Digital Ocean was performed in 1 to 3 node clusters and various
-machine specifications were tested.  The main spark program was a
-python script which processed over 15000 tweets associated with the
-affordable care act.  Each tweet was processed through natural
+Gaining public sentiment on a topic of interest can be accomplished
+with modern big data technologies and the cloud empowered by
+programming languages such as python.  This project encompasses social
+media mining of twitter, analysis of data through apache spark, and
+testing on a multimachine cluster.  Benchmarks on the cloud
+infrastructure Digital Ocean was performed in 1 to 3 node clusters and
+various machine specifications were tested.  The main spark program
+was a python script which processed over 15000 tweets associated with
+the affordable care act.  Each tweet was processed through natural
 language processing techniques and its negative or positive sentiment
 was identified.  Visualizations of the processed data were produced to
 show outcomes.  An automated deployment of this analysis was produced
@@ -42,8 +41,8 @@ through the configuration tool ansible.
 \keywords{hid-sp18-707, Apache Spark, Sentiment Analysis, Ansible, Python}
 
 
-
 \maketitle
+
 
 \section{Introduction}
 
@@ -77,22 +76,23 @@ will also be benchmarked.
 
 \begin{figure}[!ht]
   \centering\includegraphics[width=\columnwidth]
-  {../../hid-sp18-707/images/overview.png} \caption{Project Overview}
+  {../../hid-sp18-707/images/overview.pdf} \caption{Project Overview}
 \label{f:overview}
 \end{figure}
 
 \section{DigitalOcean}
 
-The benchmarking the deployment on a cloud infrastructure is one of the
-primary objectives in this project.  The cloud service DigitalOcean,
-Inc was utilized for software deployment.  While they are an American
-company, they possess datacenters in New York, San Francisco,
-Amsterdam, Singapore, London, Frankfurt, Toronto and Bangalore.  They
-offer a range of virtual machines with RAM allocation from 1 to 192
-GB, vCPU from 1 to 32 cores, and SSD storage from 25 GB to 3840 GB.
-Their service allows the resizing of existing virtual machines to
-different specifications allowing ease in comparing performance.  For
-all virtual machines the OS ubuntu 16.04.4 was utilized.
+The benchmarking the deployment on a cloud infrastructure is one of
+the primary objectives in this project.  The cloud service
+DigitalOcean, Inc was utilized for software
+deployment~\cite{www-docean}.  While they are an American company,
+they possess datacenters in New York, San Francisco, Amsterdam,
+Singapore, London, Frankfurt, Toronto and Bangalore.  They offer a
+range of virtual machines with RAM allocation from 1 to 192 GB, vCPU
+from 1 to 32 cores, and SSD storage from 25 GB to 3840 GB.  Their
+service allows the resizing of existing virtual machines to different
+specifications allowing ease in comparing performance.  For all
+virtual machines the OS ubuntu 16.04.4 was utilized.
 
 \section{Twitter}
 
@@ -168,10 +168,12 @@ main.yml are detailed in the process of configuration below.
 \begin{itemize}
 
 \item \textbf{Python}: In order for ansible to execute its yaml file
- which is written in python, it needs to be installed on the
- target vm.  The command getfacts will receive information about the
- vm including whether or not python has been installed.  If it is not
+ which is written in python, it needs to be installed on the target
+ vm.  The command getfacts will receive information about the vm
+ including whether or not python has been installed.  If it is not
  present this play will execute an installation of python minimal.
+ Code for this play was utilized from discussion in the following
+ github~\cite{www-pycheck}.
 
 \item \textbf{Variable Assignment}: The ip address of the master node
  is utilized in multiple plays during deployment. To prevent the
@@ -184,7 +186,7 @@ main.yml are detailed in the process of configuration below.
  require its installation.  Selecting the correct Java version is
  important as versions of java below 8 will not run on Spark 2.2.0 or
  higher.  Therefore java 8 was installed which is sufficient for spark
- 2.3.0.
+ 2.3.0.  Code utilized from the github repository dsugden~\cite{www-java8}.
 
 \item \textbf{Apt}: Apt packages are then installed including
 python-pip for library installations, python-dev, and also python-tk.
@@ -387,7 +389,7 @@ hurdle, all retweeted text could be filtered by utilizing the distinct
 operation in Spark.  This removes all text that is identical and will
 filter it down to simply one instance of a given retweet.  This RDD
 was collected into a text file and passed to the Wordcloud function to
-generate an image which is saved as acatextcloud.png.  The final
+generate an image which is saved as acatextcloud.pdf.  The final
 analysis involved plotting a histogram of all polarity values that
 were calculated, those values were selected and stored written to a
 list and text file called polaritylist.txt.  The list was plotted with
@@ -414,7 +416,7 @@ is not as negative as Washington makes it out to be.
 
 \begin{figure}[!ht]
   \centering\includegraphics[width=\columnwidth]
-  {../../hid-sp18-707/images/polarityhistogram.png}
+  {../../hid-sp18-707/images/polarityhistogram.pdf}
   \caption{Result of sentiment analysis of all tweets.}
 \label{f:polaritytweet}
 \end{figure}
@@ -429,7 +431,7 @@ histogram visualization.
 Here is a word cloud at Figure~\ref{f:textcloud}
 \begin{figure}[!ht]
   \centering\includegraphics[width=\columnwidth]
-  {../../hid-sp18-707/images/acatextcloud.png}
+  {../../hid-sp18-707/images/acatextcloud.pdf}
   \caption{Wordcloud
   output of Analysis.}\label{f:textcloud}
 \end{figure}
@@ -454,7 +456,7 @@ and 29.75 seconds on the small, medium and high flavors respectively
 shown in Figure~\ref{f:singlenode}.
 \begin{figure}[!ht]
   \centering\includegraphics[width=\columnwidth]
-  {../../hid-sp18-707/images/singlenode.png}
+  {../../hid-sp18-707/images/singlenode.pdf}
   \caption{Benchmarks of all flavors on a single node cluster.}
 \label{f:singlenode}
 \end{figure}
@@ -473,7 +475,7 @@ performance was still apparent.
 
 \begin{figure}[!ht]
   \centering\includegraphics[width=\columnwidth]
-  {../../hid-sp18-707/images/threenode.png}
+  {../../hid-sp18-707/images/threenode.pdf}
   \caption{Benchmarks
   of all flavors on a three node cluster.}\label{f:threenode}
 \end{figure}
